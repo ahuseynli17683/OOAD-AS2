@@ -35,34 +35,34 @@ fall behind are notified of skipped items and fast-forwarded automatically.
 ┌─────────────────────────────────────┐
 │          RingBuffer<T>              │
 ├─────────────────────────────────────┤
-│ - data        : Object[]           │
+│ - data        : Object[]            │
 │ - capacity    : int                 │
 │ - writePos    : int                 │
 │ - writeCount  : long                │
 ├─────────────────────────────────────┤
 │ + RingBuffer(capacity: int)         │
-│ ~ put(item: T): void               │
-│ ~ get(index: int): T               │
-│ ~ getCapacity(): int               │
-│ ~ getWriteCount(): long            │
-│ ~ toIndex(sequence: long): int     │
+│ ~ put(item: T): void                │
+│ ~ get(index: int): T                │
+│ ~ getCapacity(): int                │
+│ ~ getWriteCount(): long             │
+│ ~ toIndex(sequence: long): int      │
 └──────────┬──────────────────────────┘
            │
-     ┌─────┴──────┐
-     │             │
-     ▼             ▼
-┌──────────────┐ ┌────────────────────────────┐
-│BufferWriter<T>│ │      BufferReader<T>        │
-├──────────────┤ ├────────────────────────────┤
-│ - buffer     │ │ - buffer : RingBuffer<T>    │
-│              │ │ - readSequence : long       │
-│              │ │ - name : String             │
-├──────────────┤ ├────────────────────────────┤
-│ + write(T)   │ │ + read(): T                │
-│              │ │ + hasNext(): boolean        │
-│              │ │ + getMissedCount(): long    │
-│              │ │ + getName(): String         │
-└──────────────┘ └────────────────────────────┘
+     ┌─────┴─────────┐
+     │               │
+     ▼               ▼
+┌───────────────┐ ┌────────────────────────────┐
+│BufferWriter<T>│ │      BufferReader<T>       │
+├───────────────┤ ├────────────────────────────┤
+│ - buffer      │ │ - buffer : RingBuffer<T>   │
+│               │ │ - readSequence : long      │
+│               │ │ - name : String            │
+├───────────────┤ ├────────────────────────────┤
+│ + write(T)    │ │ + read(): T                │
+│               │ │ + hasNext(): boolean       │
+│               │ │ + getMissedCount(): long   │
+│               │ │ + getName(): String        │
+└───────────────┘ └────────────────────────────┘
 ```
 
 > **Relationships**  
@@ -133,15 +133,13 @@ fall behind are notified of skipped items and fast-forwarded automatically.
 ### Compile
 
 ```bash
-cd src
-javac ringbuffer/*.java
+javac *.java
 ```
 
 ### Run
 
 ```bash
-cd src
-java ringbuffer.Main
+java Main
 ```
 
 ### Expected Output (abbreviated)
@@ -152,13 +150,19 @@ java ringbuffer.Main
 ========================================
 
 --- Scenario 1: Basic write & independent reads ---
-Writer  -> write(10), write(20), write(30)
+Writer writes: 10
+Writer writes: 20
+Writer writes: 30
 Reader-1 reads: 10
 Reader-1 reads: 20
 Reader-2 reads: 10
 
 --- Scenario 2: Overwrite (slow reader) ---
-Writer  -> write(40), write(50), write(60), write(70), write(80)
+Writer writes: 40
+Writer writes: 50
+Writer writes: 60
+Writer writes: 70
+Writer writes: 80
 
 Reader-1 (was at seq 2, oldest available is seq 3):
   [Reader-1] Skipped 1 item(s) — overwritten before they could be read.
@@ -166,9 +170,3 @@ Reader-1 (was at seq 2, oldest available is seq 3):
   Reader-1 reads: 50
   ...
 ```
-
----
-
-## License
-
-This project is for educational purposes (OOAD Assignment 2).
